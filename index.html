@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Семинар 5-6: Отсортированный связный список | IT-Company</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        .code-block .keyword { color: #569cd6; }
+        .code-block .type { color: #4ec9b0; }
+        .code-block .string { color: #ce9178; }
+        .code-block .comment { color: #6a9955; }
+        .code-block .function { color: #dcdcaa; }
+        .code-block .number { color: #b5cea8; }
+
+        .output {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+
+        .output-title {
+            background: #1a1a1a;
+            color: #ffd700;
+            padding: 8px 15px;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        .structure {
+            background: #2d2d2d;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+
+        .comparison-good {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .comparison-bad {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .code-block {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🔗 Отсортированный связный список</h1>
+        <p>Модификация контейнера MyContainer&lt;T&gt; | Внутренняя структура: двусвязный список с автоматической сортировкой</p>
+        <p>Предметная область: IT-компания (Developer, Manager, Tester)</p>
+        <div class="badge">Семинар 5-6 | C++17 | CMake | Bidirectional Iterator</div>
+    </div>
+
+    <div class="content">
+        <!-- ============================================ -->
+        <!-- СТРУКТУРА ПРОЕКТА -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>📁 Структура проекта</h2>
+            <div class="structure">
+                sem6_PCS/<br>
+                ├── IWorkable.h              # Абстрактный интерфейс<br>
+                ├── Employee.h               # Базовый абстрактный класс сотрудника<br>
+                ├── Developer.h              # Класс разработчика<br>
+                ├── Manager.h                # Класс менеджера<br>
+                ├── Tester.h                 # Класс тестировщика<br>
+                ├── MyContainer.h            # Шаблонный класс-коллекция (отсортированный список)<br>
+                ├── main.cpp                 # Демонстрация работы<br>
+                ├── CMakeLists.txt           # Файл сборки<br>
+                └── README.md                # Документация
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ВНУТРЕННЯЯ СТРУКТУРА -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>🏗️ Внутренняя структура: Отсортированный связный список</h2>
+            
+            <div class="info-box">
+                <strong>📌 Выбранный вариант:</strong> Отсортированный двусвязный список (sorted doubly linked list)
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🔧 Структура узла</h4>
+                    <div class="code-block" style="margin-top: 10px;">
+                        <pre style="margin:0">
+<span class="keyword">struct</span> <span class="type">Node</span> {
+    T data;
+    Node* prev;
+    Node* next;
+    
+    <span class="function">Node</span>(<span class="keyword">const</span> T&amp; value) 
+        : data(value), prev(<span class="keyword">nullptr</span>), next(<span class="keyword">nullptr</span>) {}
+};</pre>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>📊 Поля контейнера</h4>
+                    <div class="code-block" style="margin-top: 10px;">
+                        <pre style="margin:0">
+Node* head;      <span class="comment">// указатель на первый элемент</span>
+Node* tail;      <span class="comment">// указатель на последний элемент</span>
+<span class="type">size_t</span> count;   <span class="comment">// количество элементов</span>
+Compare comp;    <span class="comment">// компаратор (std::less&lt;T&gt; по умолчанию)</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ Ключевая особенность:</strong> При добавлении элементов через push_back() они автоматически вставляются в отсортированном порядке. 
+                Контейнер всегда остаётся отсортированным без необходимости вызывать sort().
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- АЛГОРИТМ ВСТАВКИ -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>⚙️ Алгоритм вставки insertSorted()</h2>
+            
+            <div class="code-block">
+                <pre style="margin:0">
+<span class="keyword">void</span> <span class="function">insertSorted</span>(Node* newNode) {
+    <span class="comment">// 1. Если список пуст</span>
+    <span class="keyword">if</span> (!head) {
+        head = tail = newNode;
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// 2. Вставка в начало (новый элемент меньше первого)</span>
+    <span class="keyword">if</span> (comp(newNode->data, head->data)) {
+        newNode->next = head;
+        head->prev = newNode;
+        head = newNode;
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// 3. Вставка в конец (новый элемент больше последнего)</span>
+    <span class="keyword">if</span> (!comp(newNode->data, tail->data)) {
+        tail->next = newNode;
+        newNode->prev = tail;
+        tail = newNode;
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// 4. Вставка в середину (поиск позиции)</span>
+    Node* current = head;
+    <span class="keyword">while</span> (current && comp(current->data, newNode->data)) {
+        current = current->next;
+    }
+    
+    <span class="keyword">if</span> (current) {
+        newNode->prev = current->prev;
+        newNode->next = current;
+        <span class="keyword">if</span> (current->prev) {
+            current->prev->next = newNode;
+        }
+        current->prev = newNode;
+    }
+}</pre>
+            </div>
+
+            <div class="info-box">
+                <strong>⏱️ Сложность вставки:</strong> O(n) для поиска позиции + O(1) для вставки = O(n). 
+                По сравнению с исходной реализацией (массив) — вставка не требует сдвига элементов, что экономит время на копировании.
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ИТЕРАТОР -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>➡️ Итератор (Bidirectional Iterator)</h2>
+            
+            <div class="code-block">
+                <pre style="margin:0">
+<span class="keyword">class</span> <span class="type">Iterator</span> {
+<span class="keyword">private</span>:
+    Node* ptr;
+    
+<span class="keyword">public</span>:
+    <span class="comment">// Категория итератора - двунаправленный</span>
+    <span class="keyword">using</span> iterator_category = std::<span class="function">bidirectional_iterator_tag</span>;
+    <span class="keyword">using</span> value_type = T;
+    <span class="keyword">using</span> difference_type = std::<span class="type">ptrdiff_t</span>;
+    <span class="keyword">using</span> pointer = T*;
+    <span class="keyword">using</span> reference = T&amp;;
+    
+    <span class="comment">// Операторы</span>
+    reference <span class="function">operator*</span>() <span class="keyword">const</span>;
+    Iterator&amp; <span class="function">operator++</span>();    <span class="comment">// переход к следующему элементу</span>
+    Iterator&amp; <span class="function">operator--</span>();    <span class="comment">// переход к предыдущему элементу</span>
+    <span class="keyword">bool</span> <span class="function">operator==</span>(<span class="keyword">const</span> Iterator&amp;) <span class="keyword">const</span>;
+};</pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Отличие от исходной реализации:</strong> Итератор теперь имеет категорию <code>bidirectional_iterator_tag</code> 
+                (вместо <code>random_access_iterator_tag</code>). Это означает, что операции <code>it + 5</code> и <code>it[3]</code> больше не поддерживаются,
+                так как список не предоставляет произвольный доступ к элементам.
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- API КОНТЕЙНЕРА -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>📚 API класса MyContainer&lt;T&gt;</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Метод</th>
+                        <th>Описание</th>
+                        <th>Сложность</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>push_back(const T&)</code></td>
+                        <td>Добавление элемента (автоматическая сортировка)</td>
+                        <td>O(n)</td>
+                    </tr>
+                    <tr>
+                        <td><code>push_front(const T&)</code></td>
+                        <td>Добавление в начало (аналогично push_back)</td>
+                        <td>O(n)</td>
+                    </tr>
+                    <tr>
+                        <td><code>pop_back()</code></td>
+                        <td>Удаление последнего элемента</td>
+                        <td>O(1)</td>
+                    </tr>
+                    <tr>
+                        <td><code>pop_front()</code></td>
+                        <td>Удаление первого элемента</td>
+                        <td>O(1)</td>
+                    </tr>
+                    <tr>
+                        <td><code>remove(const T&)</code></td>
+                        <td>Удаление элемента по значению</td>
+                        <td>O(n)</td>
+                    </tr>
+                    <tr>
+                        <td><code>operator[](size_t)</code></td>
+                        <td>Доступ по индексу</td>
+                        <td>O(n)</td>
+                    </tr>
+                    <tr>
+                        <td><code>contains(const T&)</code></td>
+                        <td>Проверка наличия элемента</td>
+                        <td>O(n)</td>
+                    </tr>
+                    <tr>
+                        <td><code>size() / empty()</code></td>
+                        <td>Размер и проверка на пустоту</td>
+                        <td>O(1)</td>
+                    </tr>
+                    <tr>
+                        <td><code>front() / back()</code></td>
+                        <td>Первый и последний элемент</td>
+                        <td>O(1)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- СРАВНЕНИЕ С ДРУГИМИ СТРУКТУРАМИ -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>📊 Сравнение с другими вариантами</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Структура</th>
+                        <th>Вставка</th>
+                        <th>Удаление</th>
+                        <th>Поиск</th>
+                        <th>Доступ по индексу</th>
+                        <th>Память</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Отсортированный массив</td>
+                        <td>O(n)</td>
+                        <td>O(n)</td>
+                        <td class="comparison-good">O(log n)</td>
+                        <td class="comparison-good">O(1)</td>
+                        <td class="comparison-good">Минимум</td>
+                    </tr>
+                    <tr style="background: #e8f5e9;">
+                        <td><strong>Отсортированный список (наш выбор)</strong></td>
+                        <td>O(n)</td>
+                        <td>O(n)</td>
+                        <td>O(n)</td>
+                        <td>O(n)</td>
+                        <td>Средняя</td>
+                    </tr>
+                    <tr>
+                        <td>Куча (heap)</td>
+                        <td class="comparison-good">O(log n)</td>
+                        <td class="comparison-good">O(log n)</td>
+                        <td>O(n)</td>
+                        <td class="comparison-good">O(1)*</td>
+                        <td class="comparison-good">Минимум</td>
+                    </tr>
+                    <tr>
+                        <td>Дерево поиска</td>
+                        <td class="comparison-good">O(log n)</td>
+                        <td class="comparison-good">O(log n)</td>
+                        <td class="comparison-good">O(log n)</td>
+                        <td>O(n)</td>
+                        <td>Средняя</td>
+                    </tr>
+                    <tr>
+                        <td>AVL/Красно-черное дерево</td>
+                        <td class="comparison-good">O(log n)</td>
+                        <td class="comparison-good">O(log n)</td>
+                        <td class="comparison-good">O(log n)</td>
+                        <td>O(n)</td>
+                        <td>Высокая</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size: 12px; margin-top: 5px;">* - при хранении в массиве</p>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ПРЕИМУЩЕСТВА И НЕДОСТАТКИ -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>✅ Преимущества и ❌ Недостатки</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4 style="color: #4caf50;">✅ Преимущества</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Автоматическая сортировка</strong> – элементы всегда упорядочены</li>
+                        <li><strong>Эффективная вставка/удаление</strong> – O(1) после нахождения позиции</li>
+                        <li><strong>Отсутствие переаллокаций</strong> – не нужно изменять размер массива</li>
+                        <li><strong>Стабильность итераторов</strong> – не инвалидируются при операциях</li>
+                        <li><strong>Динамический размер</strong> – без ограничений по ёмкости</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color: #f44336;">❌ Недостатки</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Медленный доступ по индексу</strong> – O(n) вместо O(1)</li>
+                        <li><strong>Дополнительная память</strong> – на хранение prev/next указателей</li>
+                        <li><strong>Невозможен бинарный поиск</strong> – нет произвольного доступа</li>
+                        <li><strong>Плохая локальность данных</strong> – узлы разбросаны по памяти</li>
+                        <li><strong>Поиск всегда O(n)</strong> – даже для отсортированных данных</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ПРИКЛАДНАЯ ЗАДАЧА -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>🎯 Прикладная задача</h2>
+            
+            <h3>Условие:</h3>
+            <p>В IT-компании работают сотрудники с разными ID. Необходимо:</p>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li>Хранить сотрудников в отсортированном по ID порядке (автоматически)</li>
+                <li>Найти сотрудника по ID с использованием std::find_if</li>
+                <li>Удалить сотрудника по ID</li>
+                <li>Вывести всех сотрудников с эффективностью выше 85%</li>
+            </ol>
+
+            <div class="output-title">=== Результат работы программы ===</div>
+            <div class="output">
+=== Adding employees (auto-sorted by ID) ===
+Container size: 6
+
+=== All Employees (sorted by ID automatically) ===
+Developer: Diana (ID: 101, Salary: $80000, Language: Python, LOC/day: 600)
+Manager: Eve (ID: 102, Salary: $95000, Team size: 12, Meetings/day: 7)
+Tester: Frank (ID: 103, Salary: $70000, Bugs/day: 30, Tool: Cypress)
+Manager: Bob (ID: 104, Salary: $90000, Team size: 8, Meetings/day: 5)
+Developer: Alice (ID: 105, Salary: $75000, Language: C++, LOC/day: 450)
+Tester: Charlie (ID: 106, Salary: $65000, Bugs/day: 25, Tool: Selenium)
+
+Found employee with ID 103: Tester: Frank (ID: 103, Salary: $70000, Bugs/day: 30, Tool: Cypress)
+
+Employee with ID 999 not found
+
+=== High Efficiency Employees (Efficiency > 0.85) ===
+Developer: Diana (ID: 101, Salary: $80000, Language: Python, LOC/day: 600) - Efficiency: 100%
+Tester: Frank (ID: 103, Salary: $70000, Bugs/day: 30, Tool: Cypress) - Efficiency: 100%
+Tester: Charlie (ID: 106, Salary: $65000, Bugs/day: 25, Tool: Selenium) - Efficiency: 100%
+
+=== Range-based for loop demo ===
+Developer Diana writes 600 lines of Python code
+Manager Eve conducts 7 meetings and manages a team of 12 people
+Tester Frank finds 30 bugs using Cypress
+Manager Bob conducts 5 meetings and manages a team of 8 people
+Developer Alice writes 450 lines of C++ code
+Tester Charlie finds 25 bugs using Selenium
+
+Removed employee with ID 104
+
+=== After removal ===
+Developer: Diana (ID: 101, Salary: $80000, Language: Python, LOC/day: 600)
+Manager: Eve (ID: 102, Salary: $95000, Team size: 12, Meetings/day: 7)
+Tester: Frank (ID: 103, Salary: $70000, Bugs/day: 30, Tool: Cypress)
+Developer: Alice (ID: 105, Salary: $75000, Language: C++, LOC/day: 450)
+Tester: Charlie (ID: 106, Salary: $65000, Bugs/day: 25, Tool: Selenium)
+
+=== Testing push_front (same as push_back for sorted container) ===
+Developer: Grace (ID: 100, Salary: $72000, Bugs/day: 28, Tool: Playwright)
+Developer: Diana (ID: 101, Salary: $80000, Language: Python, LOC/day: 600)
+Manager: Eve (ID: 102, Salary: $95000, Team size: 12, Meetings/day: 7)
+Tester: Frank (ID: 103, Salary: $70000, Bugs/day: 30, Tool: Cypress)
+Developer: Alice (ID: 105, Salary: $75000, Language: C++, LOC/day: 450)
+Tester: Charlie (ID: 106, Salary: $65000, Bugs/day: 25, Tool: Selenium)
+
+=== Front element: Developer: Grace (ID: 100, Salary: $72000, Bugs/day: 28, Tool: Playwright)
+
+=== Back element: Tester: Charlie (ID: 106, Salary: $65000, Bugs/day: 25, Tool: Selenium)
+
+=== Clearing container ===
+Container size after clear: 0
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ИСПОЛЬЗОВАНИЕ std::find_if -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>🔍 Использование std::find_if</h2>
+            
+            <div class="code-block">
+                <pre style="margin:0">
+<span class="comment">// Поиск сотрудника по ID</span>
+<span class="keyword">auto</span> it = std::<span class="function">find_if</span>(container.<span class="function">begin</span>(), container.<span class="function">end</span>(), 
+    [id](Employee* emp) { 
+        <span class="keyword">return</span> emp-&gt;<span class="function">getId</span>() == id; 
+    });
+
+<span class="keyword">if</span> (it != container.<span class="function">end</span>()) {
+    std::cout &lt;&lt; <span class="string">"Found: "</span>;
+    (*it)-&gt;<span class="function">displayInfo</span>();
+}
+
+<span class="comment">// Удаление найденного сотрудника</span>
+container.<span class="function">remove</span>(*it);
+<span class="keyword">delete</span> *it;</pre>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Важно:</strong> Несмотря на то, что контейнер всегда отсортирован, <code>std::find_if</code> 
+                работает за O(n), так как итератор не поддерживает произвольный доступ. Для бинарного поиска потребовалась бы
+                структура с произвольным доступом (массив) или специализированный алгоритм.
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- СБОРКА И ЗАПУСК -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>🔧 Сборка и запуск</h2>
+            
+            <div class="code-block">
+                <pre style="margin:0">
+<span class="comment"># Переход в директорию проекта</span>
+cd sem6_PCS
+
+<span class="comment"># Очистка предыдущей сборки</span>
+rm -rf build
+
+<span class="comment"># Создание директории сборки</span>
+mkdir build && cd build
+
+<span class="comment"># Генерация файлов сборки</span>
+cmake ..
+
+<span class="comment"># Компиляция</span>
+make
+
+<span class="comment"># Запуск программы</span>
+./it_company_collection</pre>
+            </div>
+
+            <div class="success-box">
+                <strong>📋 Требования:</strong> CMake 3.10+, компилятор с поддержкой C++17 (GCC, Clang, MSVC)
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ВЫВОДЫ -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2>📝 Выводы по модификации</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>✅ Что изменено</h4>
+                    <ul style="margin-left: 20px;">
+                        <li>Внутренняя структура: массив → двусвязный список</li>
+                        <li>Добавлена автоматическая сортировка при вставке</li>
+                        <li>Изменена категория итератора: random_access → bidirectional</li>
+                        <li>Добавлены методы: remove(), contains(), front(), back()</li>
+                        <li>Сохранён внешний интерфейс контейнера</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🎓 Что дало изменение</h4>
+                    <ul style="margin-left: 20px;">
+                        <li>Автоматическая поддержка отсортированного порядка</li>
+                        <li>Отсутствие переаллокаций и сдвигов элементов</li>
+                        <li>Стабильность итераторов при вставке/удалении</li>
+                        <li>Более эффективная работа с памятью (нет резервирования)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box" style="margin-top: 20px;">
+                <strong>📖 Для защиты необходимо знать:</strong><br>
+                • Почему выбран отсортированный связный список?<br>
+                • В чём преимущества и недостатки по сравнению с исходной реализацией?<br>
+                • Как изменилась сложность операций?<br>
+                • Почему итератор теперь bidirectional, а не random_access?<br>
+                • Как работает алгоритм insertSorted()?<br>
+                • Сравнение с другими вариантами (массив, куча, дерево поиска)
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Семинар 5-6: Отсортированный связный список | IT-Company | C++17 | CMake</p>
+        <p>MyContainer&lt;T&gt; | Bidirectional Iterator | Автоматическая сортировка | std::find_if</p>
+    </div>
+</div>
+</body>
+</html>
